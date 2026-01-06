@@ -3,15 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Bastila — Commandes</title>
+  <title>Bastila Commandes</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
       --bg:#0f1724;
-      --card:#0b1220;
+      --card:#071528;
       --accent:#ff6b6b;
       --muted:#9aa4b2;
-      --glass: rgba(255,255,255,0.04);
+      --glass: rgba(255,255,255,0.03);
+      --ok:#10b981;
+      --bad:#ef4444;
     }
     html,body{height:100%}
     body{
@@ -22,37 +24,41 @@
     }
     .container{max-width:920px;margin:0 auto;}
     header{
-      display:flex;align-items:center;gap:12px;margin-bottom:14px;
+      display:flex;align-items:center;gap:14px;margin-bottom:14px;
     }
     .logo{
       width:56px;height:56px;border-radius:12px;
       background:linear-gradient(135deg,#ff8a80,#ff6b6b);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:20px;
       box-shadow:0 8px 30px rgba(0,0,0,0.6);
     }
-    h1{font-size:18px;margin:0}
+    h1{font-size:20px;margin:0}
     p.lead{margin:0;color:var(--muted);font-size:13px}
-    .toolbar{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+    .toolbar{display:flex;gap:10px;margin:14px 0;flex-wrap:wrap;align-items:center}
     .btn{
-      background:var(--glass);border:1px solid rgba(255,255,255,0.03);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer;font-weight:600;
+      background:var(--glass);border:1px solid rgba(255,255,255,0.03);padding:8px 14px;border-radius:10px;color:var(--muted);cursor:pointer;font-weight:600;
+      display:inline-flex;align-items:center;gap:8px;
     }
     .btn.primary{background:linear-gradient(90deg,#ff8a80,#ff6b6b);color:#041022;box-shadow:0 6px 18px rgba(255,107,107,0.12);}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);}
+    .btn.warn{background:transparent;border:1px solid rgba(255,80,80,0.12);color:var(--bad);}
     .grid{display:grid;grid-template-columns:1fr;gap:12px}
-    @media(min-width:680px){ .grid{grid-template-columns:1fr 380px} }
+    @media(min-width:680px){ .grid{grid-template-columns:1fr 360px} }
 
     .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.03);}
-    .order{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);display:flex;flex-direction:column;gap:8px}
+    .order{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.02);display:flex;flex-direction:column;gap:10px}
     .order-top{display:flex;justify-content:space-between;align-items:center}
-    .order-title{font-weight:700}
+    .order-title{font-weight:700;font-size:16px}
     .meta{color:var(--muted);font-size:13px}
-    .badge{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);color:var(--muted)}
+    .badge{font-size:12px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);color:var(--muted)}
     .actions{display:flex;gap:8px}
-    .actions button{padding:8px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
-    .done{background:#10b981;color:#042014}
-    .ret{background:#ef4444;color:#2b0606}
+    .actions button{padding:9px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .done{background:var(--ok);color:#042014}
+    .ret{background:var(--bad);color:#2b0606}
     footer{margin-top:16px;color:var(--muted);font-size:13px;text-align:center}
-    .empty{color:var(--muted);padding:18px;text-align:center}
-    .refresh{display:inline-flex;align-items:center;gap:8px}
-    small.hint{color:var(--muted);display:block;margin-top:8px}
+    .empty{color:var(--muted);padding:26px;text-align:center}
+    .small{font-size:13px;color:var(--muted)}
+    .info-row{display:flex;gap:8px;align-items:center}
+    .field{font-weight:600;color:#e6eef6}
   </style>
 </head>
 <body>
@@ -60,17 +66,17 @@
     <header>
       <div class="logo">B</div>
       <div>
-        <h1>Bastila — Commandes</h1>
-        <p class="lead">Liste des commandes <strong>En Préparation</strong> — pour téléphone & tablette</p>
+        <h1>Bastila Commandes</h1>
+        <p class="lead">Liste des commandes En Préparation pour téléphone &amp; tablette</p>
       </div>
     </header>
 
     <div class="toolbar">
       <button id="refreshBtn" class="btn">Rafraîchir</button>
-      <button id="autoToggle" class="btn">Auto-refresh: OFF</button>
-      <button id="openSheet" class="btn">Ouvrir la feuille</button>
+      <button id="autoToggle" class="btn ghost">Auto-refresh: OFF</button>
       <div style="flex:1"></div>
       <div class="badge" id="countBadge">Chargement…</div>
+      <button id="logoutBtn" class="btn warn">Déconnexion</button>
     </div>
 
     <div class="grid">
@@ -81,11 +87,11 @@
       </div>
 
       <div class="panel">
-        <h3>Instructions</h3>
-        <p class="meta">Ouvre cette page sur ton téléphone, clique sur <strong>Livrée</strong> ou <strong>Retour</strong> pour mettre à jour la feuille.</p>
-        <small class="hint">Si tu veux un raccourci sur l'écran d'accueil : <strong>Menu → Ajouter à l'écran d'accueil</strong>.</small>
+        <h3 class="small">Instructions</h3>
+        <p class="meta">Ouvre cette page sur ton téléphone. Appuie sur <span class="field">Livrée</span> ou <span class="field">Retour</span> pour mettre à jour la commande.</p>
+        <small class="small">Astuce : ajoute un raccourci sur l'écran d'accueil pour ouvrir rapidement l'application.</small>
         <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
-        <div id="debug" class="meta"></div>
+        <div id="debug" class="meta small"></div>
       </div>
     </div>
 
@@ -102,7 +108,7 @@
 
   const refreshBtn = document.getElementById('refreshBtn');
   const autoToggle = document.getElementById('autoToggle');
-  const openSheet = document.getElementById('openSheet');
+  const logoutBtn = document.getElementById('logoutBtn');
   const ordersList = document.getElementById('ordersList');
   const countBadge = document.getElementById('countBadge');
   const debugEl = document.getElementById('debug');
@@ -114,6 +120,7 @@
   autoToggle.onclick = () => {
     autoRefresh = !autoRefresh;
     autoToggle.textContent = `Auto-refresh: ${autoRefresh ? "ON" : "OFF"}`;
+    autoToggle.classList.toggle('primary', autoRefresh);
     if (autoRefresh) {
       loadOrders();
       autoTimer = setInterval(loadOrders, AUTO_REFRESH_INTERVAL);
@@ -122,11 +129,63 @@
     }
   };
 
-  openSheet.onclick = () => {
-    // Ouvre la feuille Google (optionnel)
-    window.open("https://docs.google.com/spreadsheets/d/19lW5iwFiUBRXV0jCvInPRddZ1fHKeB9_f_hFR0fQvCs/edit", "_blank");
+  // Déconnexion : essaye de fermer l'onglet, sinon redirige vers about:blank
+  logoutBtn.onclick = () => {
+    try { window.close(); } catch(e) {}
+    // fallback
+    window.location.href = "about:blank";
   };
 
+  // Helper: format phone according to rules
+  function formatPhone(raw) {
+    if (!raw && raw !== 0) return "";
+    let s = String(raw).trim().replace(/\s+/g, "");
+    if (!s) return "";
+    // already +212
+    if (s.startsWith('+')) {
+      // normalize +00212 -> +212
+      s = s.replace(/^\+0+/, '+');
+      return s;
+    }
+    // 00212 -> +212
+    if (s.startsWith('00')) {
+      s = s.replace(/^00/, '+');
+      if (s.startsWith('+212')) return s;
+      return s;
+    }
+    // starts with 212 -> +212...
+    if (s.startsWith('212')) {
+      return '+' + s;
+    }
+    // starts with 0 and then 5/6/7 -> keep
+    if (/^0[567]\d{8}$/.test(s)) return s;
+    // starts with 5/6/7 and length 9 -> add leading 0
+    if (/^[567]\d{8}$/.test(s)) return '0' + s;
+    // otherwise return as-is
+    return s;
+  }
+
+  // Helper: format date to "Mon Jan 05 2026 18:54:04"
+  function formatDate(raw) {
+    if (!raw) return "";
+    const d = new Date(raw);
+    if (isNaN(d)) return raw;
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const dayName = days[d.getDay()];
+    const monthName = months[d.getMonth()];
+    const dd = String(d.getDate()).padStart(2,'0');
+    const yyyy = d.getFullYear();
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mm = String(d.getMinutes()).padStart(2,'0');
+    const ss = String(d.getSeconds()).padStart(2,'0');
+    return `${dayName} ${monthName} ${dd} ${yyyy} ${hh}:${mm}:${ss}`;
+  }
+
+  // Escape HTML
+  function escapeHtml(s){ if(s===null||s===undefined) return ""; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // Load orders from Apps Script API
   async function loadOrders() {
     countBadge.textContent = "Chargement…";
     ordersList.innerHTML = '<div class="empty">Chargement…</div>';
@@ -137,7 +196,7 @@
       const res = await fetch(url, { method: "GET", cache: "no-store" });
       const json = await res.json();
 
-      debugEl.textContent = `Last fetch: ${new Date().toLocaleTimeString()}`;
+      debugEl.textContent = `Dernière requête: ${new Date().toLocaleTimeString()}`;
       if (!json || !json.ok) {
         ordersList.innerHTML = `<div class="empty">Erreur serveur: ${json && json.error ? json.error : "Réponse invalide"}</div>`;
         countBadge.textContent = "—";
@@ -152,36 +211,55 @@
         return;
       }
 
-      // Build order cards
+      // Render cards
       ordersList.innerHTML = "";
       data.forEach(o => {
         const div = document.createElement('div');
         div.className = 'order';
+        const phone = formatPhone(o.phone || "");
+        const date = formatDate(o.date || "");
+        const poulet = (o.poulet || "0");
+        const poisson = (o.poisson || "0");
+        const total = escapeHtml(o.total || "—");
+        const address = escapeHtml(o.address || "—");
+        const name = escapeHtml(o.name || "—");
+        const note = escapeHtml(o.note || "");
+        const idEncoded = encodeURIComponent(o.id || "");
+
         div.innerHTML = `
           <div class="order-top">
             <div>
-              <div class="order-title">${escapeHtml(o.name || "—")}</div>
-              <div class="meta">${escapeHtml(o.phone || "—")} • ${escapeHtml(o.date || "")}</div>
+              <div class="order-title">${name}</div>
+              <div class="meta">${escapeHtml(phone)} • ${escapeHtml(date)}</div>
             </div>
-            <div class="badge">${escapeHtml(o.total || "—")}</div>
+            <div class="badge">${total}</div>
           </div>
-          <div class="meta">${escapeHtml(o.address || "—")}</div>
-          <div class="meta">Poulet: ${escapeHtml(o.poulet || "0")} — Poisson: ${escapeHtml(o.poisson || "0")}</div>
-          <div style="margin-top:8px" class="actions">
-            <button class="done" onclick="updateStatus('${encodeURIComponent(o.id)}','Livrée')">✅ Livrée</button>
-            <button class="ret" onclick="updateStatus('${encodeURIComponent(o.id)}','Retour')">❌ Retour</button>
+
+          <div class="meta">${address}</div>
+
+          <div class="meta" style="margin-top:6px">
+            <div><strong>Bastila Poulet :</strong> ${escapeHtml(String(poulet))}</div>
+            <div><strong>Bastila Poisson :</strong> ${escapeHtml(String(poisson))}</div>
+          </div>
+
+          ${ note ? `<div class="meta" style="margin-top:6px">📝 ${note}</div>` : '' }
+
+          <div style="margin-top:10px" class="actions">
+            <button class="done" onclick="updateStatus('${idEncoded}','Livrée')">Livrée</button>
+            <button class="ret" onclick="updateStatus('${idEncoded}','Retour')">Retour</button>
           </div>
         `;
         ordersList.appendChild(div);
       });
 
     } catch (err) {
-      ordersList.innerHTML = `<div class="empty">Erreur réseau: ${err.message || err}</div>`;
+      ordersList.innerHTML = `<div class="empty">Erreur réseau: ${escapeHtml(err.message || err)}</div>`;
       countBadge.textContent = "—";
       console.error(err);
     }
   }
 
+  // Update status
   async function updateStatus(idEncoded, status) {
     try {
       const id = decodeURIComponent(idEncoded);
@@ -191,7 +269,7 @@
       if (json && json.ok) {
         await loadOrders();
       } else {
-        alert("Erreur update: " + (json && json.error ? json.error : "Réponse invalide"));
+        alert("Erreur mise à jour: " + (json && json.error ? json.error : "Réponse invalide"));
       }
     } catch (e) {
       alert("Erreur réseau lors de la mise à jour");
@@ -199,11 +277,8 @@
     }
   }
 
-  function escapeHtml(s){ if(!s) return ""; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-  // Auto-load once
+  // Init
   loadOrders();
 </script>
 </body>
 </html>
-
