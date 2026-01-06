@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#0f1724;
+      --bg:#071122;
       --card:#071528;
       --accent:#ff6b6b;
       --muted:#9aa4b2;
@@ -18,7 +18,7 @@
     html,body{height:100%}
     body{
       margin:0; font-family:Inter,system-ui,Arial,sans-serif;
-      background: #071122;
+      background: var(--bg);
       color:#e6eef6; padding:18px;
       -webkit-font-smoothing:antialiased;
     }
@@ -28,14 +28,17 @@
     }
     .logo{
       width:56px;height:56px;border-radius:12px;
-      background:linear-gradient(135deg,#ff8a80,#ff6b6b);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:20px;
+      background:linear-gradient(135deg,#ff8a80,#ff6b6b);
+      display:flex;align-items:center;justify-content:center;
+      font-weight:700;color:white;font-size:20px;
       box-shadow:0 8px 30px rgba(0,0,0,0.6);
     }
     h1{font-size:20px;margin:0}
     p.lead{margin:0;color:var(--muted);font-size:13px}
     .toolbar{display:flex;gap:10px;margin:14px 0;flex-wrap:wrap;align-items:center}
     .btn{
-      background:var(--glass);border:1px solid rgba(255,255,255,0.03);padding:8px 14px;border-radius:10px;color:var(--muted);cursor:pointer;font-weight:600;
+      background:var(--glass);border:1px solid rgba(255,255,255,0.03);
+      padding:8px 14px;border-radius:10px;color:var(--muted);cursor:pointer;font-weight:600;
       display:inline-flex;align-items:center;gap:8px;
     }
     .btn.primary{background:linear-gradient(90deg,#ff8a80,#ff6b6b);color:#041022;box-shadow:0 6px 18px rgba(255,107,107,0.12);}
@@ -45,7 +48,13 @@
     @media(min-width:680px){ .grid{grid-template-columns:1fr 360px} }
 
     .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.03);}
-    .order{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.02);display:flex;flex-direction:column;gap:10px}
+    /* order card */
+    .order{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+      padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.02);
+      display:flex;flex-direction:column;gap:10px;
+      margin-bottom:12px; /* small space between cards */
+    }
     .order-top{display:flex;justify-content:space-between;align-items:center}
     .order-title{font-weight:700;font-size:16px}
     .meta{color:var(--muted);font-size:13px}
@@ -59,6 +68,8 @@
     .small{font-size:13px;color:var(--muted)}
     .info-row{display:flex;gap:8px;align-items:center}
     .field{font-weight:600;color:#e6eef6}
+    /* orders list container has vertical gap (redundant safe) */
+    #ordersList{display:flex;flex-direction:column;gap:12px}
   </style>
 </head>
 <body>
@@ -67,16 +78,16 @@
       <div class="logo">B</div>
       <div>
         <h1>Bastila Commandes</h1>
-        <p class="lead">Liste des commandes En Préparation pour téléphone &amp; tablette</p>
+        <p class="lead">Liste des commandes En Préparation · Plateforme de livraison</p>
       </div>
     </header>
 
     <div class="toolbar">
       <button id="refreshBtn" class="btn">Rafraîchir</button>
       <button id="autoToggle" class="btn ghost">Auto-refresh: OFF</button>
+      <button id="logoutBtn" class="btn warn">Déconnexion</button>
       <div style="flex:1"></div>
       <div class="badge" id="countBadge">Chargement…</div>
-      <button id="logoutBtn" class="btn warn">Déconnexion</button>
     </div>
 
     <div class="grid">
@@ -96,7 +107,7 @@
     </div>
 
     <footer>
-      <small>Made with ♥ — Bastila Orders</small>
+      <small>Made by Bastila</small>
     </footer>
   </div>
 
@@ -132,7 +143,6 @@
   // Déconnexion : essaye de fermer l'onglet, sinon redirige vers about:blank
   logoutBtn.onclick = () => {
     try { window.close(); } catch(e) {}
-    // fallback
     window.location.href = "about:blank";
   };
 
@@ -143,14 +153,12 @@
     if (!s) return "";
     // already +212
     if (s.startsWith('+')) {
-      // normalize +00212 -> +212
       s = s.replace(/^\+0+/, '+');
       return s;
     }
     // 00212 -> +212
     if (s.startsWith('00')) {
       s = s.replace(/^00/, '+');
-      if (s.startsWith('+212')) return s;
       return s;
     }
     // starts with 212 -> +212...
@@ -242,6 +250,8 @@
             <div><strong>Bastila Poisson :</strong> ${escapeHtml(String(poisson))}</div>
           </div>
 
+          ${ note ? `<div class="meta" style="margin-top:6px">Note: ${note}</div>` : '' }
+
           <div style="margin-top:10px" class="actions">
             <button class="done" onclick="updateStatus('${idEncoded}','Livrée')">Livrée</button>
             <button class="ret" onclick="updateStatus('${idEncoded}','Retour')">Retour</button>
@@ -280,5 +290,3 @@
 </script>
 </body>
 </html>
-
-
