@@ -23,14 +23,11 @@
       -webkit-font-smoothing:antialiased;
     }
     .container{max-width:920px;margin:0 auto;}
-    header{
-      display:flex;align-items:center;gap:14px;margin-bottom:14px;
-    }
+    header{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
     .logo{
       width:56px;height:56px;border-radius:12px;
       background:linear-gradient(135deg,#ff8a80,#ff6b6b);
-      display:flex;align-items:center;justify-content:center;
-      font-weight:700;color:white;font-size:20px;
+      display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:20px;
       box-shadow:0 8px 30px rgba(0,0,0,0.6);
     }
     h1{font-size:20px;margin:0}
@@ -49,15 +46,18 @@
 
     .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.03);}
     /* order card */
+    #ordersList{display:flex;flex-direction:column;gap:12px}
     .order{
       background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
       padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.02);
-      display:flex;flex-direction:column;gap:10px;
-      margin-bottom:12px; /* small space between cards */
+      display:flex;flex-direction:column;gap:8px;
+      margin-bottom:0;
     }
     .order-top{display:flex;justify-content:space-between;align-items:center}
-    .order-title{font-weight:700;font-size:16px}
-    .meta{color:var(--muted);font-size:13px}
+    .order-title{font-weight:600;font-size:16px;color:#fff}
+    .meta{color:var(--muted);font-size:13px;line-height:1.4}
+    .label { color:var(--muted); font-weight:400; display:inline-block; width:115px; } /* label column */
+    .value { color:#e6eef6; font-weight:400; } /* value column */
     .badge{font-size:12px;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);color:var(--muted)}
     .actions{display:flex;gap:8px}
     .actions button{padding:9px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
@@ -68,8 +68,6 @@
     .small{font-size:13px;color:var(--muted)}
     .info-row{display:flex;gap:8px;align-items:center}
     .field{font-weight:600;color:#e6eef6}
-    /* orders list container has vertical gap (redundant safe) */
-    #ordersList{display:flex;flex-direction:column;gap:12px}
   </style>
 </head>
 <body>
@@ -173,7 +171,7 @@
     return s;
   }
 
-  // Helper: format date to "Mon Jan 05 2026 18:54:04"
+  // Helper: format date to "Thu Jan 01 2026 15:57:37"
   function formatDate(raw) {
     if (!raw) return "";
     const d = new Date(raw);
@@ -228,7 +226,7 @@
         const date = formatDate(o.date || "");
         const poulet = (o.poulet || "0");
         const poisson = (o.poisson || "0");
-        const total = escapeHtml(o.total || "—");
+        const total = escapeHtml(o.total || "—") + " MAD";
         const address = escapeHtml(o.address || "—");
         const name = escapeHtml(o.name || "—");
         const note = escapeHtml(o.note || "");
@@ -238,17 +236,15 @@
           <div class="order-top">
             <div>
               <div class="order-title">${name}</div>
-              <div class="meta">${escapeHtml(phone)} • ${escapeHtml(date)}</div>
             </div>
             <div class="badge">${total}</div>
           </div>
 
-          <div class="meta">${address}</div>
-
-          <div class="meta" style="margin-top:6px">
-            <div><strong>Bastila Poulet :</strong> ${escapeHtml(String(poulet))}</div>
-            <div><strong>Bastila Poisson :</strong> ${escapeHtml(String(poisson))}</div>
-          </div>
+          <div class="meta"><span class="label">Numero :</span><span class="value"> ${escapeHtml(phone)}</span></div>
+          <div class="meta"><span class="label">Date :</span><span class="value"> ${escapeHtml(date)}</span></div>
+          <div class="meta"><span class="label">Address :</span><span class="value"> ${address}</span></div>
+          <div class="meta"><span class="label">Bastila Poulet :</span><span class="value"> ${escapeHtml(String(poulet))}</span></div>
+          <div class="meta"><span class="label">Bastila Poisson :</span><span class="value"> ${escapeHtml(String(poisson))}</span></div>
 
           ${ note ? `<div class="meta" style="margin-top:6px">Note: ${note}</div>` : '' }
 
