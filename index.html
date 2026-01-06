@@ -242,8 +242,6 @@
             <div><strong>Bastila Poisson :</strong> ${escapeHtml(String(poisson))}</div>
           </div>
 
-          ${ note ? `<div class="meta" style="margin-top:6px">📝 ${note}</div>` : '' }
-
           <div style="margin-top:10px" class="actions">
             <button class="done" onclick="updateStatus('${idEncoded}','Livrée')">Livrée</button>
             <button class="ret" onclick="updateStatus('${idEncoded}','Retour')">Retour</button>
@@ -282,4 +280,5 @@
 </script>
 </body>
 </html>
+
 
