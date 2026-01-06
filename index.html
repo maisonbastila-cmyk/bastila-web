@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bastila — Commandes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#ff6b6b;
+      --muted:#9aa4b2;
+      --glass: rgba(255,255,255,0.04);
+    }
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,Arial,sans-serif;
+      background: linear-gradient(180deg,#071122 0%, #07192a 100%);
+      color:#e6eef6; padding:18px;
+      -webkit-font-smoothing:antialiased;
+    }
+    .container{max-width:920px;margin:0 auto;}
+    header{
+      display:flex;align-items:center;gap:12px;margin-bottom:14px;
+    }
+    .logo{
+      width:56px;height:56px;border-radius:12px;
+      background:linear-gradient(135deg,#ff8a80,#ff6b6b);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:20px;
+      box-shadow:0 8px 30px rgba(0,0,0,0.6);
+    }
+    h1{font-size:18px;margin:0}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+    .toolbar{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+    .btn{
+      background:var(--glass);border:1px solid rgba(255,255,255,0.03);padding:8px 12px;border-radius:10px;color:var(--muted);cursor:pointer;font-weight:600;
+    }
+    .btn.primary{background:linear-gradient(90deg,#ff8a80,#ff6b6b);color:#041022;box-shadow:0 6px 18px rgba(255,107,107,0.12);}
+    .grid{display:grid;grid-template-columns:1fr;gap:12px}
+    @media(min-width:680px){ .grid{grid-template-columns:1fr 380px} }
+
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.03);}
+    .order{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);display:flex;flex-direction:column;gap:8px}
+    .order-top{display:flex;justify-content:space-between;align-items:center}
+    .order-title{font-weight:700}
+    .meta{color:var(--muted);font-size:13px}
+    .badge{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);color:var(--muted)}
+    .actions{display:flex;gap:8px}
+    .actions button{padding:8px 12px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
+    .done{background:#10b981;color:#042014}
+    .ret{background:#ef4444;color:#2b0606}
+    footer{margin-top:16px;color:var(--muted);font-size:13px;text-align:center}
+    .empty{color:var(--muted);padding:18px;text-align:center}
+    .refresh{display:inline-flex;align-items:center;gap:8px}
+    small.hint{color:var(--muted);display:block;margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">B</div>
+      <div>
+        <h1>Bastila — Commandes</h1>
+        <p class="lead">Liste des commandes <strong>En Préparation</strong> — pour téléphone & tablette</p>
+      </div>
+    </header>
+
+    <div class="toolbar">
+      <button id="refreshBtn" class="btn">🔄 Rafraîchir</button>
+      <button id="autoToggle" class="btn">Auto-refresh: OFF</button>
+      <button id="openSheet" class="btn">Ouvrir la feuille</button>
+      <div style="flex:1"></div>
+      <div class="badge" id="countBadge">Chargement…</div>
+    </div>
+
+    <div class="grid">
+      <div class="panel" id="listPanel">
+        <div id="ordersList">
+          <div class="empty">Chargement…</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Instructions</h3>
+        <p class="meta">Ouvre cette page sur ton téléphone, clique sur <strong>Livrée</strong> ou <strong>Retour</strong> pour mettre à jour la feuille.</p>
+        <small class="hint">Si tu veux un raccourci sur l'écran d'accueil : <strong>Menu → Ajouter à l'écran d'accueil</strong>.</small>
+        <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+        <div id="debug" class="meta"></div>
+      </div>
+    </div>
+
+    <footer>
+      <small>Made with ♥ — Bastila Orders</small>
+    </footer>
+  </div>
+
+<script>
+  // === CONFIG ===
+  const EXEC_URL = "https://script.google.com/a/~/macros/s/AKfycbwTlu5tSmjiGM7sxjeI65RvCL96Uw0u9DnpMnJS90SOtgfgyIsbKyuuCgsZIiTJS2Kq/exec";
+  const AUTO_REFRESH_INTERVAL = 15000; // ms
+  // ==============
+
+  const refreshBtn = document.getElementById('refreshBtn');
+  const autoToggle = document.getElementById('autoToggle');
+  const openSheet = document.getElementById('openSheet');
+  const ordersList = document.getElementById('ordersList');
+  const countBadge = document.getElementById('countBadge');
+  const debugEl = document.getElementById('debug');
+
+  let autoRefresh = false;
+  let autoTimer = null;
+
+  refreshBtn.onclick = loadOrders;
+  autoToggle.onclick = () => {
+    autoRefresh = !autoRefresh;
+    autoToggle.textContent = `Auto-refresh: ${autoRefresh ? "ON" : "OFF"}`;
+    if (autoRefresh) {
+      loadOrders();
+      autoTimer = setInterval(loadOrders, AUTO_REFRESH_INTERVAL);
+    } else {
+      clearInterval(autoTimer);
+    }
+  };
+
+  openSheet.onclick = () => {
+    // Ouvre la feuille Google (optionnel)
+    window.open("https://docs.google.com/spreadsheets/d/19lW5iwFiUBRXV0jCvInPRddZ1fHKeB9_f_hFR0fQvCs/edit", "_blank");
+  };
+
+  async function loadOrders() {
+    countBadge.textContent = "Chargement…";
+    ordersList.innerHTML = '<div class="empty">Chargement…</div>';
+    debugEl.textContent = "";
+
+    try {
+      const url = EXEC_URL + "?api=getPendingOrders";
+      const res = await fetch(url, { method: "GET", cache: "no-store" });
+      const json = await res.json();
+
+      debugEl.textContent = `Last fetch: ${new Date().toLocaleTimeString()}`;
+      if (!json || !json.ok) {
+        ordersList.innerHTML = `<div class="empty">Erreur serveur: ${json && json.error ? json.error : "Réponse invalide"}</div>`;
+        countBadge.textContent = "—";
+        return;
+      }
+
+      const data = json.data || [];
+      countBadge.textContent = data.length + " en préparation";
+
+      if (data.length === 0) {
+        ordersList.innerHTML = '<div class="empty">Aucune commande en préparation.</div>';
+        return;
+      }
+
+      // Build order cards
+      ordersList.innerHTML = "";
+      data.forEach(o => {
+        const div = document.createElement('div');
+        div.className = 'order';
+        div.innerHTML = `
+          <div class="order-top">
+            <div>
+              <div class="order-title">${escapeHtml(o.name || "—")}</div>
+              <div class="meta">${escapeHtml(o.phone || "—")} • ${escapeHtml(o.date || "")}</div>
+            </div>
+            <div class="badge">${escapeHtml(o.total || "—")}</div>
+          </div>
+          <div class="meta">${escapeHtml(o.address || "—")}</div>
+          <div class="meta">Poulet: ${escapeHtml(o.poulet || "0")} — Poisson: ${escapeHtml(o.poisson || "0")}</div>
+          <div style="margin-top:8px" class="actions">
+            <button class="done" onclick="updateStatus('${encodeURIComponent(o.id)}','Livrée')">✅ Livrée</button>
+            <button class="ret" onclick="updateStatus('${encodeURIComponent(o.id)}','Retour')">❌ Retour</button>
+          </div>
+        `;
+        ordersList.appendChild(div);
+      });
+
+    } catch (err) {
+      ordersList.innerHTML = `<div class="empty">Erreur réseau: ${err.message || err}</div>`;
+      countBadge.textContent = "—";
+      console.error(err);
+    }
+  }
+
+  async function updateStatus(idEncoded, status) {
+    try {
+      const id = decodeURIComponent(idEncoded);
+      const url = EXEC_URL + `?api=updateStatus&id=${encodeURIComponent(id)}&status=${encodeURIComponent(status)}`;
+      const res = await fetch(url, { method: "GET", cache: "no-store" });
+      const json = await res.json();
+      if (json && json.ok) {
+        await loadOrders();
+      } else {
+        alert("Erreur update: " + (json && json.error ? json.error : "Réponse invalide"));
+      }
+    } catch (e) {
+      alert("Erreur réseau lors de la mise à jour");
+      console.error(e);
+    }
+  }
+
+  function escapeHtml(s){ if(!s) return ""; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // Auto-load once
+  loadOrders();
+</script>
+</body>
+</html>
